@@ -9,9 +9,9 @@
 			</div>
             
             <?php echo form_submit(array(
-                'name' => 'submit',
-                'id' => 'submit',
-                'value'=>$this->lang->line('common_submit'),
+                'name' => 'submit_stock',
+                'id' => 'submit_stock',
+                'value' => $this->lang->line('common_submit'),
                 'class' => 'btn btn-primary btn-sm pull-right')); ?>
         </fieldset>
     </div>
@@ -35,11 +35,9 @@ $(document).ready(function()
 	};
 
 	var add_stock_location = function() {
-		var id = $(this).parent().find('input').attr('id');
-		id = id.replace(/.*?_(\d+)$/g, "$1");
 		var block = $(this).parent().clone(true);
 		var new_block = block.insertAfter($(this).parent());
-		var new_block_id = 'stock_location_' + ++id;
+		var new_block_id = 'stock_location[]';
 		$(new_block).find('label').html("<?php echo $this->lang->line('config_stock_location'); ?> " + ++location_count).attr('for', new_block_id).attr('class', 'control-label col-xs-2');
 		$(new_block).find('input').attr('id', new_block_id).removeAttr('disabled').attr('name', new_block_id).attr('class', 'form-control input-sm').val('');
 		hide_show_remove();
@@ -76,7 +74,7 @@ $(document).ready(function()
 			$(form).ajaxSubmit({
 				success: function(response)	{
 					$.notify({ message: response.message }, { type: response.success ? 'success' : 'danger'});
-					$("#stock_locations").load('<?php echo site_url("config/stock_locations"); ?>', init_add_remove_locations);
+					$("#stock_locations").load('<?php echo site_url("config/ajax_stock_locations"); ?>', init_add_remove_locations);
 				},
 				dataType: 'json'
 			});

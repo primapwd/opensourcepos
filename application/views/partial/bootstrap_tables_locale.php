@@ -1,7 +1,7 @@
 (function ($) {
-    'use strict';
+	'use strict';
 
-    $.fn.bootstrapTable.locales['<?php echo current_language_code(); ?>'] = {
+	$.fn.bootstrapTable.locales['<?php echo current_language_code(); ?>'] = {
 		formatLoadingMessage: function () {
 			return "<?php echo $this->lang->line('tables_loading');?>";
 		},
@@ -33,11 +33,18 @@
 		formatAllRows: function () {
 			return "<?php echo $this->lang->line('tables_all'); ?>";
 		},
-		formatConfirmDelete : function() {
-			return "<?php echo $this->lang->line((isset($editable) ? $editable : $controller_name). "_confirm_delete")?>";
-		}
-    };
+		formatConfirmAction: function(action) {
+			if (action == "delete")
+			{
+				return "<?php echo $this->lang->line((isset($editable) ? $editable : $controller_name). "_confirm_delete")?>";
+			}
+			else
+			{
+				return "<?php echo $this->lang->line((isset($editable) ? $editable : $controller_name). "_confirm_restore")?>";
+			}
+        }
+	};
 
-    $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales["<?php echo current_language_code();?>"]);
+	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales["<?php echo current_language_code();?>"]);
 
 })(jQuery);

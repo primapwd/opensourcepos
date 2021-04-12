@@ -8,7 +8,7 @@
 | 
 | 
 */ 
-$config['application_version'] = '3.0.2';
+$config['application_version'] = '3.3.3';
 
 /* 
 |-------------------------------------------------------------------------- 
@@ -19,7 +19,7 @@ $config['application_version'] = '3.0.2';
 | 
 | 
 */ 
-$config['commit_sha1'] = '$Id$';
+$config['commit_sha1'] = 'dev';
  
 /* 
 |-------------------------------------------------------------------------- 
@@ -65,8 +65,9 @@ $config['db_log_enabled'] = FALSE;
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
-$config['base_url'] .= '://' . $_SERVER['HTTP_HOST'];
+$config['https_on'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_ENV['FORCE_HTTPS']) && $_ENV['FORCE_HTTPS'] == 'true');
+$config['base_url'] = $config['https_on'] ? 'https' : 'http';
+$config['base_url'] .= '://' . ((isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost') ;
 $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
@@ -294,7 +295,7 @@ $config['log_file_extension'] = '';
 | IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
 |            integer notation (i.e. 0700, 0644, etc.)
 */
-$config['log_file_permissions'] = 0644;
+$config['log_file_permissions'] = 0640;
 
 /*
 |--------------------------------------------------------------------------
@@ -358,7 +359,7 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '';
+$config['encryption_key'] = getenv('ENCRYPTION_KEY') ? getenv('ENCRYPTION_KEY') : '';
 
 /*
 |--------------------------------------------------------------------------
@@ -437,8 +438,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix'] = '';
 $config['cookie_domain'] = '';
 $config['cookie_path'] = '/';
-$config['cookie_secure'] = FALSE;
-$config['cookie_httponly'] = FALSE;
+$config['cookie_secure'] = $config['https_on'];
+$config['cookie_httponly'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -487,7 +488,7 @@ $config['csrf_token_name'] = 'csrf_ospos_v3';
 $config['csrf_cookie_name'] = 'csrf_cookie_ospos_v3';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array();
+$config['csrf_exclude_uris'] = array('login');
 
 /*
 |--------------------------------------------------------------------------
@@ -510,6 +511,7 @@ $config['csrf_exclude_uris'] = array();
 |
 */
 $config['compress_output'] = FALSE;
+
 
 /*
 |--------------------------------------------------------------------------

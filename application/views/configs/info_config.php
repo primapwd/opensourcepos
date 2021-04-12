@@ -120,9 +120,9 @@
 			</div>
 
 			<?php echo form_submit(array(
-				'name' => 'submit_form',
-				'id' => 'submit_form',
-				'value'=>$this->lang->line('common_submit'),
+				'name' => 'submit_info',
+				'id' => 'submit_info',
+				'value' => $this->lang->line('common_submit'),
 				'class' => 'btn btn-primary btn-sm pull-right')); ?>
 		</fieldset>
 	</div>
@@ -134,9 +134,9 @@ $(document).ready(function()
 {
 	$("a.fileinput-exists").click(function() {
 		$.ajax({
-			type: "GET",
-			url: "<?php echo site_url("$controller_name/remove_logo"); ?>",
-			dataType: "json"
+			type: 'GET',
+			url: '<?php echo site_url("$controller_name/remove_logo"); ?>',
+			dataType: 'json'
 		})
 	});
 

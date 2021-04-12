@@ -3,7 +3,7 @@
 	var btn_id, dialog_ref;
 
 	var hide = function() {
-		dialog_ref.close();
+		dialog_ref && dialog_ref.close();
 	};
 
 	var clicked_id = function() {
@@ -12,11 +12,19 @@
 
 	var submit = function(button_id) {
 		return function(dlog_ref) {
+			const form = $('form', dlog_ref.$modalBody).first();
+			const validator = form.data('validator');
+			const submitted = validator && validator.formSubmitted;
+
 			btn_id = button_id;
 			dialog_ref = dlog_ref;
-			if (button_id == 'submit') {
-				$('form', dlog_ref.$modalBody).first().submit();
+
+			if (button_id == 'submit' && (!submitted && btn_id != "btnNew")) {
+				form.submit();
+
+				validator.valid() && $('#submit').prop('disabled', true).css('opacity', 0.5);
 			}
+			return false;
 		}
 	};
 
@@ -37,16 +45,19 @@
 				}
 			});
 
+			var has_new_btn = "btnNew" in $(this).data();
 			$.each($(this).data(), function(name, value) {
 				var btn_class = name.split("btn");
 				if (btn_class && btn_class.length > 1) {
 					var btn_name = btn_class[1].toLowerCase();
 					var is_submit = btn_name == 'submit';
+					var is_new = btn_name === 'new';
+					var is_enter = has_new_btn ? is_new: is_submit;
 					buttons.push({
 						id: btn_name,
 						label: value,
 						cssClass: button_class[btn_name],
-						hotkey: is_submit ? 13 : undefined, // Enter.
+						hotkey: is_enter ? 13 : undefined, // Enter.
 						action: submit(btn_name)
 					});
 				}
@@ -141,16 +152,17 @@
 		});
 	};
 
-	var do_delete = function (url, ids) {
-		if (confirm($.fn.bootstrapTable.defaults.formatConfirmDelete())) {
-			$.post((url || options.resource) + '/delete', {'ids[]': ids || selected_ids()}, function (response) {
-				//delete was successful, remove checkbox rows
-				if (response.success) {
-					var selector = ids ? row_selector(ids) : selected_rows();
-					table().collapseAllRows();
-					$(selector).each(function (index, element) {
-						$(this).find("td").animate({backgroundColor: "green"}, 1200, "linear")
-							.end().animate({opacity: 0}, 1200, "linear", function () {
+	var do_action = function(action) {
+        return function (url, ids) {
+			if (confirm($.fn.bootstrapTable.defaults.formatConfirmAction(action))) {
+				$.post((url || options.resource) + '/' + action, {'ids[]': ids || selected_ids()}, function (response) {
+					//delete was successful, remove checkbox rows
+					if (response.success) {
+						var selector = ids ? row_selector(ids) : selected_rows();
+						table().collapseAllRows();
+						$(selector).each(function (index, element) {
+							$(this).find("td").animate({backgroundColor: "green"}, 1200, "linear")
+								.end().animate({opacity: 0}, 1200, "linear", function () {
 								table().remove({
 									field: options.uniqueId,
 									values: selected_ids()
@@ -160,16 +172,17 @@
 									enable_actions();
 								}
 							});
-					});
-					$.notify(response.message, { type: 'success' });
-				} else {
-					$.notify(response.message, { type: 'danger' });
-				}
-			}, "json");
-		} else {
-			return false;
-		}
-	};
+						});
+						$.notify(response.message, {type: 'success'});
+					} else {
+						$.notify(response.message, {type: 'danger'});
+					}
+				}, "json");
+			} else {
+				return false;
+			}
+    	};
+    };
 
 	var load_success = function(callback) {
 		return function(response) {
@@ -182,7 +195,7 @@
 
 	var options;
 
-	var toggle_column_visbility = function() {
+	var toggle_column_visibility = function() {
 		if (localStorage[options.employee_id]) {
 			var user_settings = JSON.parse(localStorage[options.employee_id]);
 			user_settings[options.resource] && $.each(user_settings[options.resource], function(index, element) {
@@ -194,21 +207,33 @@
 	var init = function (_options) {
 		options = _options;
 		enable_actions = enable_actions(options.enableActions);
-		$('#table').bootstrapTable($.extend(options, {
+		load_success = load_success(options.onLoadSuccess);
+		$('#table')
+			.addClass("table-striped")
+			.addClass("table-bordered")
+			.bootstrapTable($.extend(options, {
 			columns: options.headers,
+			stickyHeader: true,
+			stickyHeaderOffsetLeft: $('#table').offset().right + 'px',
+			stickyHeaderOffsetRight: $('#table').offset().right + 'px',
 			url: options.resource + '/search',
 			sidePagination: 'server',
+			selectItemName: 'btSelectItem',
 			pageSize: options.pageSize,
-			striped: true,
 			pagination: true,
 			search: options.resource || false,
 			showColumns: true,
 			clickToSelect: true,
 			showExport: true,
+			exportDataType: 'basic',
+			exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
 			exportOptions: {
 				fileName: options.resource.replace(/.*\/(.*?)$/g, '$1')
 			},
-			onPageChange: load_success(options.onLoadSuccess),
+			onPageChange: function(response) {
+				load_success(response);
+				enable_actions();
+			},
 			toolbar: '#toolbar',
 			uniqueId: options.uniqueId || 'id',
 			trimOnSearch: false,
@@ -216,13 +241,17 @@
 			onUncheck: enable_actions,
 			onCheckAll: enable_actions,
 			onUncheckAll: enable_actions,
-			onLoadSuccess: load_success(options.onLoadSuccess),
+			onLoadSuccess: function(response) {
+				load_success(response);
+				enable_actions();
+			},
 			onColumnSwitch : function(field, checked) {
 				var user_settings = localStorage[options.employee_id];
 				user_settings = (user_settings && JSON.parse(user_settings)) || {};
 				user_settings[options.resource] = user_settings[options.resource] || {};
 				user_settings[options.resource][field] = checked;
 				localStorage[options.employee_id] = JSON.stringify(user_settings);
+				dialog_support.init("a.modal-dlg");
 			},
 			queryParamsType: 'limit',
 			iconSize: 'sm',
@@ -232,13 +261,20 @@
 		}));
 		enable_actions();
 		init_delete();
-		toggle_column_visbility();
+		init_restore();
+		toggle_column_visibility();
 		dialog_support.init("button.modal-dlg");
 	};
 
 	var init_delete = function (confirmMessage) {
-		$("#delete").click(function (event) {
-			do_delete();
+		$("#delete").click(function(event) {
+			do_action("delete")();
+		});
+	};
+
+	var init_restore = function (confirmMessage) {
+		$("#restore").click(function(event) {
+			do_action("restore")();
 		});
 	};
 
@@ -249,7 +285,6 @@
 	var submit_handler = function(url) {
 		return function (resource, response) {
 			var id = response.id;
-
 			if (!response.success) {
 				$.notify(response.message, { type: 'danger' });
 			} else {
@@ -258,18 +293,14 @@
 				var rows = $(selector.join(",")).length;
 				if (rows > 0 && rows < 15) {
 					var ids = response.id.split(":");
-				    $.get({
-						url: [url || resource + '/get_row', id].join("/"),
-						success: function (response) {
-							$.each(selector, function (index, element) {
-								var id = $(element).data('uniqueid');
-								table().updateByUniqueId({id: id, row: response[id] || response});
-							});
-							dialog_support.init("a.modal-dlg");
-							highlight_row(ids);
-						},
-						dataType: 'json'
-					});
+					$.get([url || resource + '/get_row', id].join("/"), {}, function (response) {
+						$.each(selector, function (index, element) {
+							var id = $(element).data('uniqueid');
+							table().updateByUniqueId({id: id, row: response[id] || response});
+						});
+						dialog_support.init("a.modal-dlg");
+						highlight_row(ids);
+					}, 'json');
 				} else {
 					// call hightlight function once after refresh
 					options.load_callback = function () {
@@ -280,6 +311,7 @@
 				}
 				$.notify(message, {type: 'success' });
 			}
+			return false;
 		};
 	};
 
@@ -291,7 +323,8 @@
 		},
 		handle_submit: handle_submit,
 		init: init,
-		do_delete: do_delete,
+		do_delete: do_action("delete"),
+		do_restore: do_action("restore"),
 		refresh : refresh,
 		selected_ids : selected_ids,
 	});
@@ -337,19 +370,8 @@
 
 })(window.form_support = window.form_support || {}, jQuery);
 
-$(document).ready(function() {
-	var footer_text = $("#footer strong").text();
-	var footer_sha1 = footer_text.split("- ")[1];
-	if (session_sha1 != footer_sha1 || !footer_text.match(/Open Source Point Of Sale/)) {
-		$(window).block({ message: '' });
-	}
-});
-
-function number_sorter(a, b)
-{
-	a = +a.replace(/[^\-0-9\.]+/g,"");
-	b = +b.replace(/[^\-0-9\.]+/g,"");
-	if (a > b) return 1;
-	if (a < b) return -1;
-	return 0;
+function number_sorter(a, b) {
+	a = +a.replace(/[^\-0-9]+/g, '');
+	b = +b.replace(/[^\-0-9]+/g, '');
+	return a - b;
 }

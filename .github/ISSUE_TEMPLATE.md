@@ -1,37 +1,29 @@
-### IMPORTANT IMPORTANT IMPORTANT
+### Background information
 
-Chose what you want to report: New Feature or Bug.
-If you remove the template when submitting a Bug your issue will be closed as we cannot help without basic information.
+__IMPORTANT: If you choose to ignore this issue report template, your issue will be closed as we cannot help without the requested information.__
 
+Please make sure you tick (add an x between the square brackets with no spaces) the following check boxes:
 
-### New Feature / Enhacement
-
-For New Features or Enhacements please remove all the template text and clearly write your proposal.
-It's important to state whether you expect the community to implement it or you will contribute the work.
-Please bear in mind that we will implement new features only on the current code, there is no support for old versions.
-
-
-### Issue / Question / Bug
-
-Before submitting an issue please make sure you remove the first section of the template and you tick (add a x between the square brakets) and agree with all the following check boxes:
-
-- [] Checked the current issues database and no similar issue was already discussed
-- [] Read the README, WHATS_NEW and UPGRADE
-- [] Read the FAQ (https://github.com/jekkos/opensourcepos#faq) for any known install and/or upgrade gotchas (in specific PHP has php5-gd, php-intl and sockets installed)
 - [] Reporting an issue of an unmodified OSPOS installation
-- [] PHP version is at least 5.5 and not 7.x
-- [] MySQL version is 5.5 or 5.6 and not 5.7
-- [] Ran any database upgrade scripts (e.g. database/2.4_to_3.0.sql)
-- [] Know the version of OSPOS and git commit hash (check the footer of your OSPOS) and will add to my issue report
-- [] Know the name and version of OS, Web server and MySQL and will add to my issue report
+- [] Checked [open and closed issues](https://github.com/opensourcepos/opensourcepos/issues?utf8=%E2%9C%93&q=is%3Aissue) and no similar issue was already reported (please make sure you searched!)
+- [] Read [README](https://github.com/opensourcepos/opensourcepos/blob/master/README.md), [WHATS_NEW](https://github.com/opensourcepos/opensourcepos/blob/master/WHATS_NEW.txt), [INSTALL.md](https://github.com/opensourcepos/opensourcepos/blob/master/INSTALL.md) and [UPGRADE](https://github.com/opensourcepos/opensourcepos/blob/master/UPGRADE.txt)
+- [] Read the [FAQ](https://github.com/opensourcepos/opensourcepos#faq) for any known install and/or upgrade gotchas (in specific PHP extensions installed)
+- [] Read the [wiki](https://github.com/opensourcepos/opensourcepos/wiki)
+- [] Executed any database upgrade scripts if an upgrade pre 3.0.0 (e.g. database/2.4_to_3.0.sql)
+- [] Aware the installation code is in [bintray](https://bintray.com/jekkos/opensourcepos/opensourcepos/view/files?sort=updated&order=asc#files) (see README), and [GitHub master](https://github.com/opensourcepos/opensourcepos/tree/master) is for [developers only](https://github.com/opensourcepos/opensourcepos/wiki/Development-setup) and therefore not complete nor stable
 
 ### Installation information
 
+- OSPOS version is: 
+- OSPOS git commit hash is: 
+- PHP version is: 
+- MySQL or MariaDB version is: 
+- OS and version is: 
+- WebServer is: 
+- Selected language is: 
+- (If applicable) Docker installation: 
+- (If applicable) Installation package for the LAMP/LEMP stack is: 
 
-### Expected behaviour
+### Issue / Bug  / Question / New Feature
 
-
-### Actual behaviour
-
-
-### Steps to reproduce the issue
+Please write your issue here. If a bug, please make sure to provide as much information as possible including configuration settings (e.g. Decimals set, Tax mode), language and steps to reproduce the bug.

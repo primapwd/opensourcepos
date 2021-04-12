@@ -4,15 +4,11 @@ require_once("Summary_report.php");
 
 class Summary_items extends Summary_report
 {
-	function __construct()
-	{
-		parent::__construct();
-	}
-
 	protected function _get_data_columns()
 	{
 		return array(
 			array('item_name' => $this->lang->line('reports_item')),
+			array('unit_price' => $this->lang->line('reports_unit_price'), 'sorter' => 'number_sorter'),
 			array('quantity' => $this->lang->line('reports_quantity')),
 			array('subtotal' => $this->lang->line('reports_subtotal'), 'sorter' => 'number_sorter'),
 			array('tax' => $this->lang->line('reports_tax'), 'sorter' => 'number_sorter'),
@@ -26,7 +22,8 @@ class Summary_items extends Summary_report
 		parent::_select($inputs);
 
 		$this->db->select('
-				items.name AS name,
+				MAX(items.name) AS name,
+				MAX(items.unit_price) AS unit_price,
 				SUM(sales_items.quantity_purchased) AS quantity_purchased
 		');
 	}
@@ -41,7 +38,7 @@ class Summary_items extends Summary_report
 	protected function _group_order()
 	{
 		$this->db->group_by('items.item_id');
-		$this->db->order_by('items.name');
+		$this->db->order_by('name');
 	}
 }
 ?>

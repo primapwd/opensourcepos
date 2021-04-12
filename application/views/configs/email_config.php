@@ -1,6 +1,6 @@
 <?php echo form_open('config/save_email/', array('id' => 'email_config_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal')); ?>
 	<div id="config_wrapper">
-		<fieldset id="config_email">
+		<fieldset id="config_info">
 			<div id="required_fields_message"><?php echo $this->lang->line('common_fields_required_message'); ?></div>
 			<ul id="email_error_message_box" class="error_message_box"></ul>
 
@@ -17,7 +17,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_mailpath'), 'mailpath', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-4">
 					<?php echo form_input(array(
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_smtp_host'), 'smtp_host', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-2">
 					<?php echo form_input(array(
@@ -39,7 +39,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_smtp_port'), 'smtp_port', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-2">
 					<?php echo form_input(array(
@@ -63,7 +63,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_smtp_timeout'), 'smtp_timeout', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-2">
 					<?php echo form_input(array(
@@ -74,7 +74,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_smtp_user'), 'smtp_user', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-4">
 					<div class="input-group">
@@ -88,7 +88,7 @@
 				</div>
 			</div>
 
-			<div class="form-group form-group-sm">	
+			<div class="form-group form-group-sm">
 				<?php echo form_label($this->lang->line('config_email_smtp_pass'), 'smtp_pass', array('class' => 'control-label col-xs-2')); ?>
 				<div class="col-xs-4">
 					<div class="input-group">
@@ -103,8 +103,8 @@
 			</div>
 
 			<?php echo form_submit(array(
-				'name' => 'submit_form',
-				'id' => 'submit_form',
+				'name' => 'submit_email',
+				'id' => 'submit_email',
 				'value' => $this->lang->line('common_submit'),
 				'class' => 'btn btn-primary btn-sm pull-right')); ?>
 		</fieldset>
@@ -116,41 +116,41 @@
 $(document).ready(function()
 {
 	var check_protocol = function() {
-		if($("#protocol").val() == 'sendmail')
+		if($('#protocol').val() == 'sendmail')
 		{
-			$("#mailpath").prop('disabled', false);
-			$("#smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto").prop('disabled', true);
+			$('#mailpath').prop('disabled', false);
+			$('#smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto').prop('disabled', true);
 		}
-		else if($("#protocol").val() == 'smtp')
+		else if($('#protocol').val() == 'smtp')
 		{
-			$("#smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto").prop('disabled', false);
-			$("#mailpath").prop('disabled', true);
+			$('#smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto').prop('disabled', false);
+			$('#mailpath').prop('disabled', true);
 		}
 		else
 		{
-			$("#mailpath, #smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto").prop('disabled', true);
+			$('#mailpath, #smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto').prop('disabled', true);
 		}
 	};
 
-	$("#protocol").change(check_protocol).ready(check_protocol);
+	$('#protocol').change(check_protocol).ready(check_protocol);
 
 	$('#email_config_form').validate($.extend(form_support.handler, {
 		submitHandler: function(form) {
 			$(form).ajaxSubmit({
 				beforeSerialize: function(arr, $form, options) {
-					$("#mailpath, #smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto").prop("disabled", false); 
+					$('#mailpath, #smtp_host, #smtp_user, #smtp_pass, #smtp_port, #smtp_timeout, #smtp_crypto').prop('disabled', false);
 					return true;
 				},
 				success: function(response) {
-					$.notify(response.message, { type: response.success ? 'success' : 'danger'} );
+					$.notify( { message: response.message }, { type: response.success ? 'success' : 'danger'} )
 					// set back disabled state
 					check_protocol();
 				},
-				dataType:'json'
+				dataType: 'json'
 			});
 		},
-		
-		errorLabelContainer: "#email_error_message_box"
+
+		errorLabelContainer: '#email_error_message_box'
 	}));
 });
 </script>

@@ -1,5 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Item library
+ *
+ * Library with utilities to manage items
+ */
+
 class Item_lib
 {
 	private $CI;
@@ -28,7 +34,7 @@ class Item_lib
 	public function clear_item_location()
 	{
 		$this->CI->session->unset_userdata('item_location');
-	}	
+	}
 }
 
 ?>

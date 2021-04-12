@@ -7,21 +7,27 @@ require APPPATH.'/views/barcodes/Code128.php';
 require APPPATH.'/views/barcodes/Ean13.php';
 require APPPATH.'/views/barcodes/Ean8.php';
 
+/**
+ * Barcode library
+ *
+ * Library with utilities to manage barcodes
+ */
+
 class Barcode_lib
 {
 	private $CI;
 	private $supported_barcodes = array('Code39' => 'Code 39', 'Code128' => 'Code 128', 'Ean8' => 'EAN 8', 'Ean13' => 'EAN 13');
-	
+
 	public function __construct()
 	{
 		$this->CI =& get_instance();
 	}
-	
+
 	public function get_list_barcodes()
 	{
 		return $this->supported_barcodes;
 	}
-	
+
 	public function get_barcode_config()
 	{
 		$data['company'] = $this->CI->config->item('company');
@@ -31,15 +37,15 @@ class Barcode_lib
 		$data['barcode_font_size'] = $this->CI->config->item('barcode_font_size');
 		$data['barcode_height'] = $this->CI->config->item('barcode_height');
 		$data['barcode_width'] = $this->CI->config->item('barcode_width');
-		$data['barcode_quality'] = $this->CI->config->item('barcode_quality');
 		$data['barcode_first_row'] = $this->CI->config->item('barcode_first_row');
 		$data['barcode_second_row'] = $this->CI->config->item('barcode_second_row');
 		$data['barcode_third_row'] = $this->CI->config->item('barcode_third_row');
 		$data['barcode_num_in_row'] = $this->CI->config->item('barcode_num_in_row');
-		$data['barcode_page_width'] = $this->CI->config->item('barcode_page_width');	  
+		$data['barcode_page_width'] = $this->CI->config->item('barcode_page_width');
 		$data['barcode_page_cellspacing'] = $this->CI->config->item('barcode_page_cellspacing');
 		$data['barcode_generate_if_empty'] = $this->CI->config->item('barcode_generate_if_empty');
-		
+		$data['barcode_formats'] = $this->CI->config->item('barcode_formats');
+
 		return $data;
 	}
 
@@ -47,6 +53,7 @@ class Barcode_lib
 	{
 		$barcode_type = $this->CI->config->item('barcode_type');
 		$barcode_instance = $this->get_barcode_instance($barcode_type);
+
 		return $barcode_instance->validate($barcode);
 	}
 
@@ -56,7 +63,7 @@ class Barcode_lib
 		$is_valid = empty($item['item_number']) && $barcode_config['barcode_generate_if_empty'] || $barcode_instance->validate($item['item_number']);
 
 		// if barcode validation does not succeed,
-		if (!$is_valid)
+		if(!$is_valid)
 		{
 			$barcode_instance = Barcode_lib::get_barcode_instance();
 		}
@@ -73,16 +80,16 @@ class Barcode_lib
 			case 'Code39':
 				return new emberlabs\Barcode\Code39();
 				break;
-				
+
 			case 'Code128':
 			default:
 				return new emberlabs\Barcode\Code128();
 				break;
-				
+
 			case 'Ean8':
 				return new emberlabs\Barcode\Ean8();
 				break;
-				
+
 			case 'Ean13':
 				return new emberlabs\Barcode\Ean13();
 				break;
@@ -93,13 +100,13 @@ class Barcode_lib
 	{
 		$seed = $barcode_config['barcode_content'] !== "id" && !empty($item['item_number']) ? $item['item_number'] : $item['item_id'];
 
-		if( $barcode_config['barcode_content'] !== "id" && !empty($item['item_number']))
+		if($barcode_config['barcode_content'] !== "id" && !empty($item['item_number']))
 		{
 			$seed = $item['item_number'];
 		}
 		else
 		{
-			if ($barcode_config['barcode_generate_if_empty'])
+			if($barcode_config['barcode_generate_if_empty'])
 			{
 				// generate barcode with the correct instance
 				$seed = $barcode_instance->generate($seed);
@@ -117,16 +124,15 @@ class Barcode_lib
 		try
 		{
 			$barcode_instance = Barcode_lib::barcode_instance($item, $barcode_config);
-			$barcode_instance->setQuality($barcode_config['barcode_quality']);
 			$barcode_instance->setDimensions($barcode_config['barcode_width'], $barcode_config['barcode_height']);
 
 			$barcode_instance->draw();
-			
+
 			return $barcode_instance->base64();
-		} 
+		}
 		catch(Exception $e)
 		{
-			echo 'Caught exception: ', $e->getMessage(), "\n";		
+			echo 'Caught exception: ', $e->getMessage(), "\n";
 		}
 	}
 
@@ -139,24 +145,21 @@ class Barcode_lib
 
 			// set the receipt number to generate the barcode for
 			$barcode->setData($barcode_content);
-			
-			// image quality 100
-			$barcode->setQuality(100);
-			
-			// width: 200, height: 30
-			$barcode->setDimensions(200, 30);
+
+			// width: 300, height: 50
+			$barcode->setDimensions(300, 50);
 
 			// draw the image
 			$barcode->draw();
-			
+
 			return $barcode->base64();
-		} 
+		}
 		catch(Exception $e)
 		{
-			echo 'Caught exception: ', $e->getMessage(), "\n";		
+			echo 'Caught exception: ', $e->getMessage(), "\n";
 		}
 	}
-	
+
 	public function display_barcode($item, $barcode_config)
 	{
 		$display_table = "<table>";
@@ -166,14 +169,14 @@ class Barcode_lib
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "</table>";
-		
+
 		return $display_table;
 	}
-	
+
 	private function manage_display_layout($layout_type, $item, $barcode_config)
 	{
 		$result = '';
-		
+
 		if($layout_type == 'name')
 		{
 			$result = $this->CI->lang->line('items_name') . " " . $item['name'];
@@ -201,14 +204,14 @@ class Barcode_lib
 
 		return character_limiter($result, 40);
 	}
-	
-	public function listfonts($folder) 
+
+	public function listfonts($folder)
 	{
 		$array = array();
 
-		if (($handle = opendir($folder)) !== false)
+		if(($handle = opendir($folder)) !== FALSE)
 		{
-			while (($file = readdir($handle)) !== false)
+			while(($file = readdir($handle)) !== FALSE)
 			{
 				if(substr($file, -4, 4) === '.ttf')
 				{

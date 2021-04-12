@@ -244,7 +244,7 @@ class Installer
             return;
         }
 
-        @mkdir($dst, 0755);
+        @mkdir($dst, 0755, TRUE);
         
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($src, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -253,8 +253,9 @@ class Installer
         
         foreach ($iterator as $file) {
             if ($file->isDir()) {
-                @mkdir($dst . '/' . $iterator->getSubPathName());
+                @mkdir($dst . '/' . $iterator->getSubPathName(), 0775, TRUE);
             } else {
+
                 $success = copy($file, $dst . '/' . $iterator->getSubPathName());
                 if ($success) {
                     echo 'copied: ' . $dst . '/' . $iterator->getSubPathName() . PHP_EOL;

@@ -1,4 +1,8 @@
 <?php $this->load->view("partial/header"); ?>
+
+<script type="text/javascript">
+	dialog_support.init("a.modal-dlg");
+</script>
 	      
 <div class="jumbotron" style="max-width: 60%; margin:auto">
 	<?php echo form_open("messages/send/", array('id'=>'send_sms_form', 'enctype'=>'multipart/form-data', 'method'=>'post', 'class'=>'form-horizontal')); ?>
@@ -38,7 +42,7 @@ $(document).ready(function()
 		submitHandler: function(form) {
 			$(form).ajaxSubmit({
 				success: function(response)	{
-					$.notify(response.message, { type: response.success ? 'success' : 'danger'} );
+					$.notify( { message: response.message }, { type: response.success ? 'success' : 'danger'} )
 				},
 				dataType: 'json'
 			});

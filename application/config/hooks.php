@@ -18,13 +18,6 @@ $hook['post_controller_constructor'][] = array(
                                     'filepath' => 'hooks'
                                 );
 
-$hook['post_controller_constructor'][] = array(
-                                    'class'    => '',
-                                    'function' => 'load_stats',
-                                    'filename' => 'load_stats.php',
-                                    'filepath' => 'hooks'
-                                );
-
 // 'post_controller' indicated execution of hooks after controller is finished
 $hook['post_controller'] = array(
                                     'class' => '',
@@ -32,3 +25,21 @@ $hook['post_controller'] = array(
                                     'filename' => 'db_log.php',
                                     'filepath' => 'hooks'
                                 );
+
+$hook['pre_controller'][] = array(
+    'class'    => '',
+    'function' => 'validate_save',
+    'filename' => 'save_hook.php',
+    'filepath' => 'hooks'
+);
+
+
+$hook['pre_system'] = function() {
+    $config_path = APPPATH . (ENVIRONMENT == 'testing') ? 'tests/' : 'config/';
+	try {
+		$dotenv = new Dotenv\Dotenv($config_path);
+		$dotenv->overload();
+	} catch(Exception $e) {
+		// continue, .env file not present
+	}
+};
