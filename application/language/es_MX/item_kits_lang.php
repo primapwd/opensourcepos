@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 $lang["item_kits_add_item"] = "Agregar Artículo";
 $lang["item_kits_all"] = "Todo";
 $lang["item_kits_cannot_be_deleted"] = "Borrado de Kit(s) de Artículos fallido.";
@@ -6,7 +7,7 @@ $lang["item_kits_confirm_delete"] = "¿Estás seguro(a) de querer borrar los kit
 $lang["item_kits_confirm_restore"] = "¿Está seguro de querer restaurar lo(s) kit(s) seleccionado(s)?";
 $lang["item_kits_description"] = "Descripción del Kit de Artículos";
 $lang["item_kits_discount"] = "Descuento";
-$lang["item_kits_discount_fixed"] = "";
+$lang["item_kits_discount_fixed"] = "Descuento Fijo";
 $lang["item_kits_discount_percent"] = "Porcentaje de descuento";
 $lang["item_kits_discount_type"] = "Tipo de Descuento";
 $lang["item_kits_error_adding_updating"] = "Error agregando/actualizando Kit de Artículos.";
@@ -16,6 +17,7 @@ $lang["item_kits_item"] = "Artículo";
 $lang["item_kits_item_kit_number"] = "";
 $lang["item_kits_item_kit_number_duplicate"] = "";
 $lang["item_kits_item_number"] = "";
+$lang["item_kits_item_number_duplicate"] = "";
 $lang["item_kits_items"] = "Artículos";
 $lang["item_kits_kit"] = "ID del Kit";
 $lang["item_kits_kit_and_components"] = "Kits y Componentes";
@@ -34,4 +36,5 @@ $lang["item_kits_sequence"] = "Secuencia";
 $lang["item_kits_successful_adding"] = "Has agregado un kit de artículos";
 $lang["item_kits_successful_deleted"] = "Borrado completo";
 $lang["item_kits_successful_updating"] = "Kit de Artículos actualizado";
+$lang["item_kits_unit_price"] = "";
 $lang["item_kits_update"] = "Actualizar Kit de Artículos";

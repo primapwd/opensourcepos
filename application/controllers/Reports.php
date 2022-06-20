@@ -230,6 +230,8 @@ class Reports extends Secure_Controller
 		{
 			$tabular_data[] = $this->xss_clean(array(
 				'item_name' => $row['name'],
+				'category' => $row['category'],
+				'cost_price' => $row['cost_price'],
 				'unit_price' => $row['unit_price'],
 				'quantity' => to_quantity_decimals($row['quantity_purchased']),
 				'subtotal' => to_currency($row['subtotal']),
@@ -303,6 +305,7 @@ class Reports extends Secure_Controller
 		foreach($report_data as $row)
 		{
 			$tabular_data[] = $this->xss_clean(array(
+				'tax_name' => $row['name'],
 				'tax_percent' => $row['percent'],
 				'report_count' => $row['count'],
 				'subtotal' => to_currency($row['subtotal']),
@@ -957,7 +960,7 @@ class Reports extends Secure_Controller
 			$summary_data[] = $this->xss_clean(array(
 				'id' => $row['sale_id'],
 				'type_code' => $row['type_code'],
-				'sale_date' => to_date(strtotime($row['sale_date'])),
+				'sale_time' => to_datetime(strtotime($row['sale_time'])),
 				'quantity' => to_quantity_decimals($row['items_purchased']),
 				'employee_name' => $row['employee_name'],
 				'subtotal' => to_currency($row['subtotal']),
@@ -1069,7 +1072,7 @@ class Reports extends Secure_Controller
 			$summary_data[] = $this->xss_clean(array(
 				'id' => $row['sale_id'],
 				'type_code' => $row['type_code'],
-				'sale_date' => to_date(strtotime($row['sale_date'])),
+				'sale_time' => to_datetime(strtotime($row['sale_time'])),
 				'quantity' => to_quantity_decimals($row['items_purchased']),
 				'customer_name' => $row['customer_name'],
 				'subtotal' => to_currency($row['subtotal']),
@@ -1177,7 +1180,7 @@ class Reports extends Secure_Controller
 			$summary_data[] = $this->xss_clean(array(
 				'id' => $row['sale_id'],
 				'type_code' => $row['type_code'],
-				'sale_date' => to_date(strtotime($row['sale_date'])),
+				'sale_time' => to_datetime(strtotime($row['sale_time'])),
 				'quantity' => to_quantity_decimals($row['items_purchased']),
 				'employee_name' => $row['employee_name'],
 				'customer_name' => $row['customer_name'],
@@ -1255,7 +1258,7 @@ class Reports extends Secure_Controller
 
 		$summary_data = $this->xss_clean(array(
 			'sale_id' => $report_data['sale_id'],
-			'sale_date' => to_date(strtotime($report_data['sale_date'])),
+			'sale_time' => to_datetime(strtotime($row['sale_time'])),
 			'quantity' => to_quantity_decimals($report_data['items_purchased']),
 			'employee_name' => $report_data['employee_name'],
 			'customer_name' => $report_data['customer_name'],
@@ -1306,7 +1309,7 @@ class Reports extends Secure_Controller
 			$tabular_data[] = $this->xss_clean(array(
 				'id' => $row['sale_id'],
 				'type_code' => $row['type_code'],
-				'sale_date' => to_date(strtotime($row['sale_date'])),
+				'sale_time' => to_datetime(strtotime($row['sale_time'])),
 				'name' => $row['name'],
 				'category' => $row['category'],
 				'item_number' => $row['item_number'],
@@ -1390,7 +1393,7 @@ class Reports extends Secure_Controller
 			$summary_data[] = $this->xss_clean(array(
 				'id' => $row['sale_id'],
 				'type_code' => $row['type_code'],
-				'sale_date' => to_date(strtotime($row['sale_date'])),
+				'sale_time' => to_datetime(strtotime($row['sale_time'])),
 				'quantity' => to_quantity_decimals($row['items_purchased']),
 				'employee_name' => $row['employee_name'],
 				'customer_name' => $row['customer_name'],
@@ -1464,7 +1467,7 @@ class Reports extends Secure_Controller
 
 		$summary_data = $this->xss_clean(array(
 			'receiving_id' => $report_data['receiving_id'],
-			'receiving_date' => to_date(strtotime($report_data['receiving_date'])),
+			'receiving_time' => to_datetime(strtotime($row['receiving_time'])),
 			'quantity' => to_quantity_decimals($report_data['items_purchased']),
 			'employee_name' => $report_data['employee_name'],
 			'supplier_name' => $report_data['supplier_name'],
@@ -1506,7 +1509,7 @@ class Reports extends Secure_Controller
 		{
 			$summary_data[] = $this->xss_clean(array(
 				'id' => $row['receiving_id'],
-				'receiving_date' => to_date(strtotime($row['receiving_date'])),
+				'receiving_time' => to_datetime(strtotime($row['receiving_time'])),
 				'quantity' => to_quantity_decimals($row['items_purchased']),
 				'employee_name' => $row['employee_name'],
 				'supplier_name' => $row['supplier_name'],
